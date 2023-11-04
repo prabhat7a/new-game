@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game with js</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: rgb(7, 161, 110);
+            min-height: 90vh;
+            width: 80vw;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .show-box {
+            display: flex;
+            background-color: rgb(8, 145, 81);
+            justify-content: space-around;
+            height: 80px;
+            align-items: center;
+        }
+
+        .box {
+            background-color: white;
+            flex-basis: 30%;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 30px;
+        }
+
+        .buttons-container {
+            padding: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .buttons-container button {
+            font-size: 20px;
+            height: 50px;
+            width: 50px;
+            font-weight: 900;
+            font-family: sans-serif;
+            border-radius: 50%;
+            border: 0;
+            box-shadow: 0px 0px 10px black;
+        }
+
+        .warning {
+            position: absolute;
+            top: 5px;
+            background-color: red;
+            padding: 5px 10px;
+            border-radius: 50px;
+            color: white;
+            font-family: sans-serif;
+            width: 100px;
+            text-align: center;
+            right: 40%;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="show-box">
+            <div class="box">
+                <h2 class="hit">00</h2>
+            </div>
+            <div class="box">
+                <h2 class="timer">00</h2>
+            </div>
+            <div class="box">
+                <h2 class="score">0</h2>
+            </div>
+        </div>
+        <div class="buttons-container">
+        </div>
+        <audio src="/sound.wav" id="audio"></audio>
+        <audio src="/error.wav" id="error-audio"></audio>
+        <p class="warning">
+            wrong
+        </p>
+        <!-- js -->
+        <script>
+            const btnContainer = document.querySelector(".buttons-container");
+            const hit = document.querySelector(".hit");
+            const timer = document.querySelector(".timer");
+            const scoreElem = document.querySelector(".score");
+            const body = document.body;
+
+            let count = 0;
+            let score = 0;
+            let newHit;
+            let audio = document.getElementById("audio");
+            let errorSound = document.querySelector("#error-audio");
+
+            function createButtons() {
+                btnContainer.innerHTML = "";
+                for (let i = 0; i <= 169; i++) {
+                    let randomNumber = Math.floor(Math.random() * 9) + 1;
+                    let button = document.createElement("button");
+                    button.innerText = randomNumber;
+                    btnContainer.append(button);
+                }
+            }
+            function starTimer() {
+                let intervalId = setInterval(function () {
+                    if (count < 60) {
+                        count++;
+                    } else {
+                        count = 0;
+                        clearInterval(intervalId);
+                        alert("Game has been finished");
+                    }
+                    timer.innerText = count;
+                }, 1000);
+            }
+            function randomHit() {
+                newHit = Math.floor(Math.random() * 9) + 1;
+                hit.innerText = newHit;
+            }
+            function increaseScore() {
+                score += 10;
+                scoreElem.innerText = score;
+            }
+            btnContainer.addEventListener("click", (e) => {
+                let clickedNuber = Number(e.target.textContent);
+                if (clickedNuber === newHit) {
+                    increaseScore();
+                    createButtons();
+                    randomHit();
+                } else {
+                    let warning = document.querySelector(".warning");
+                    warning.style.display = "block"
+                    errorSound.play();
+                    setTimeout(() => {
+                        warning.style.display = "none"
+                    }, 1000)
+                }
+                audio.play()
+            })
+            starTimer();
+            randomHit();
+            createButtons();
+        </script>
+</body>
+
+</html>
